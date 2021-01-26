@@ -17,7 +17,7 @@ import com.infy.pma.api.entities.Designation;
 import com.infy.pma.api.services.DesignationService;
 
 @RestController
-@RequestMapping(path = "/api/designation")
+@RequestMapping(path = "/api/v1/designation")
 public class DesignationController {
 
 	@Autowired

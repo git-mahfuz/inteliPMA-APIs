@@ -17,4 +17,6 @@ public interface EmployeeRepository extends CrudRepository<Employee, String> {
 	
 	Page<Employee> findAll(Pageable page);
 	
+	Employee findByEmployeeId(String employeeId);
+	
 }

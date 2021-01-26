@@ -1,12 +1,17 @@
 package com.infy.pma.api.entities;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -16,9 +21,12 @@ import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.infy.pma.api.enums.EmployementType;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "employeeId")
 public class Employee {
 
 	@Id
@@ -38,7 +46,7 @@ public class Employee {
 	private EmployementType type;
 
 	@ManyToOne
-    @JoinColumn(name = "department_id")
+	@JoinColumn(name = "department_id")
 	private Department department;
 
 	@ManyToOne
@@ -54,12 +62,18 @@ public class Employee {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date lastDateOfEmployment;
 
+	@ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	@JoinTable(name = "employee_project", 
+			joinColumns = @JoinColumn(name="employee_id"),
+			inverseJoinColumns = @JoinColumn(name="project_id"))
+	private List<Project> projects;
+
 	public Employee() {
 
 	}
 
 	public Employee(String employeeId, String firstName, String lastName, EmployementType type, Department department,
-			Designation designation, Date dateOfJoining, Date lastDateOfEmployment) {
+			Designation designation, Date dateOfJoining, Date lastDateOfEmployment, List<Project> projects) {
 		super();
 		this.employeeId = employeeId;
 		this.firstName = firstName;
@@ -69,6 +83,7 @@ public class Employee {
 		this.designation = designation;
 		this.dateOfJoining = dateOfJoining;
 		this.lastDateOfEmployment = lastDateOfEmployment;
+		this.projects = projects;
 	}
 
 	public String getEmployeeId() {
@@ -133,6 +148,21 @@ public class Employee {
 
 	public void setLastDateOfEmployment(Date lastDateOfEmployment) {
 		this.lastDateOfEmployment = lastDateOfEmployment;
+	}
+
+	public List<Project> getProjects() {
+		return projects;
+	}
+
+	public void setProjects(List<Project> projects) {
+		this.projects = projects;
+	}
+
+	@Override
+	public String toString() {
+		return "Employee [employeeId=" + employeeId + ", firstName=" + firstName + ", lastName=" + lastName + ", type="
+				+ type + ", department=" + department + ", designation=" + designation + ", dateOfJoining="
+				+ dateOfJoining + ", lastDateOfEmployment=" + lastDateOfEmployment + ", projects=" + projects + "]";
 	}
 
 }

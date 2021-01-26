@@ -17,7 +17,7 @@ import com.infy.pma.api.entities.Department;
 import com.infy.pma.api.services.DepartmentService;
 
 @RestController
-@RequestMapping(path = "/api/department")
+@RequestMapping(path = "/api/v1/department")
 public class DepartmentController {
 
 	@Autowired

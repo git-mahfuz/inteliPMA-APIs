@@ -18,7 +18,7 @@ import com.infy.pma.api.entities.Employee;
 import com.infy.pma.api.services.EmployeeService;
 
 @RestController
-@RequestMapping(path = "/api/employee")
+@RequestMapping(path = "/api/v1/employee")
 public class EmployeeController {
 
 	@Autowired

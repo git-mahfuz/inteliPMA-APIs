@@ -35,9 +35,8 @@ public class Department {
 		
 	}
 
-	public Department(String departmentId, String name) {
+	public Department(String name) {
 		super();
-		this.departmentId = departmentId;
 		this.name = name;
 	}
 

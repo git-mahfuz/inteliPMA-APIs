@@ -75,6 +75,19 @@ public class Project {
 		this.employees = employees;
 	}
 
+	
+
+	public Project(String projectId, String name, ProjectStage stage,
+			String description, Date startDate, Date endDate) {
+		super();
+		this.projectId = projectId;
+		this.name = name;
+		this.stage = stage;
+		this.description = description;
+		this.startDate = startDate;
+		this.endDate = endDate;
+	}
+
 	public String getProjectId() {
 		return projectId;
 	}

@@ -134,6 +134,7 @@ class DesignationControllerTest {
 						.contentType(MediaType.APPLICATION_JSON)
 				)
 					.andDo(print())
+					.andExpect(jsonPath("$.errors").isArray())
 					.andExpect(status().isBadRequest());
 		
 		

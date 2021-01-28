@@ -21,57 +21,60 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.infy.pma.api.entities.Department;
+import com.infy.pma.api.entities.Designation;
 import com.infy.pma.api.entities.Employee;
 import com.infy.pma.api.entities.Project;
-import com.infy.pma.api.enums.ProjectStage;
-import com.infy.pma.api.services.ProjectService;
+import com.infy.pma.api.enums.EmployementType;
+import com.infy.pma.api.services.EmployeeService;
 
-@WebMvcTest(controllers = ProjectController.class)
-class ProjectControllerTest {
+@WebMvcTest(controllers = EmployeeController.class)
+class EmployeeControllerTest {
 
 	@Autowired
-	private MockMvc mockMvc;
+	MockMvc mockMvc;
 	
 	@MockBean
-	private ProjectService projectService; 
-	
-	private static List<Project> projects = new ArrayList<Project>();
+	EmployeeService employeeService;
 	
 	private static List<Employee> employees = new ArrayList<Employee>();
+	
+	private static List<Project> projects = new ArrayList<Project>();
 	
 	@BeforeAll
 	public static void initialize() {
 		
-		Project project1 = new Project();
-		project1.setProjectId(UUID.randomUUID().toString());
-		project1.setName("Deployment");
-		project1.setDescription("Some description");
-		project1.setStage(ProjectStage.INPROGRESS);
-		project1.setStartDate(new Date());
-		project1.setEndDate(new Date());
-		project1.setEmployees(employees);
+		Employee employee1 = new Employee();
+		employee1.setEmployeeId(UUID.randomUUID().toString());
+		employee1.setFirstName("John");
+		employee1.setLastName("Doe");
+		employee1.setDepartment(
+					new Department()
+				);
+		employee1.setDesignation(
+					new Designation()
+				);
+		employee1.setType(EmployementType.INTERN);
+		employee1.setDateOfJoining(new Date());
+		employee1.setLastDateOfEmployment(new Date());
+		employee1.setProjects(projects);
 		
-		projects.add(project1);
+		employees.add(employee1);
 		
-		Project project2 = new Project();
-		project2.setProjectId(UUID.randomUUID().toString());
-		project2.setName("Development");
-		project2.setDescription("Some description");
-		project2.setStage(ProjectStage.INPROGRESS);
-		project2.setStartDate(new Date());
-		project2.setEndDate(new Date());
-		project2.setEmployees(employees);
+		Employee employee2 = employee1;
+		employee2.setEmployeeId(UUID.randomUUID().toString());
 		
-		projects.add(project2);
+		employees.add(employee2);
+		
 	}
 	
 	@Test
-	void fetchListOfProjectAsAValidRequest() throws Exception {
+	void doingAValidRequestToGetAListOfEmployeeAndExpectingSuccessResponse() throws Exception {
 		
-		when(projectService.findAll()).thenReturn(projects);
+		when(employeeService.findAll()).thenReturn(employees);
 		
 		mockMvc.perform(
-					get("/api/v1/project?page=0&size=10")
+					get("/api/v1/employee?page=0&size=5")
 					.contentType(MediaType.APPLICATION_JSON)
 				)
 					.andDo(print())
@@ -79,26 +82,27 @@ class ProjectControllerTest {
 	}
 	
 	@Test
-	void fetchListOfProjectWithotuPaginationParams() throws Exception {
+	void doingAnInvlidRequestToGetAListOfEmployeeAndExpectingBadRequestResponse() throws Exception {
 		
-		when(projectService.findAll()).thenReturn(projects);
+		when(employeeService.findAll()).thenReturn(employees);
 		
 		mockMvc.perform(
-					get("/api/v1/project")
+					get("/api/v1/employee")
 					.contentType(MediaType.APPLICATION_JSON)
 				)
 					.andDo(print())
+					.andExpect(jsonPath("$.errors").isNotEmpty())
 					.andExpect(status().isBadRequest());
 	}
 	
 	@Test
-	void addANewProjectWithValidDataAndGetSuccessResponse() throws Exception {
+	void doinaAValidRequestToAddAnEmployeeAndExpectingSuccessResponse() throws Exception {
 		
-		when(projectService.save(projects.get(0))).thenReturn(projects.get(0));
+		when(employeeService.save(employees.get(0))).thenReturn(employees.get(0));
 		
 		mockMvc.perform(
-					post("/api/v1/project")
-					.content(new ObjectMapper().writeValueAsString(projects.get(0)))
+					post("/api/v1/employee")
+					.content(new ObjectMapper().writeValueAsString(employees.get(0)))
 					.contentType(MediaType.APPLICATION_JSON)
 				)
 					.andDo(print())
@@ -106,14 +110,12 @@ class ProjectControllerTest {
 	}
 	
 	@Test
-	void addANewProjectWithoutDataAndGetErrorResponse() throws Exception {
+	void doinaAnInValidRequestToAddAnEmployeeAndExpectingBadRequestResponse() throws Exception {
 		
-		Project project = new Project();
-		
-		when(projectService.save(project)).thenReturn(project);
+		when(employeeService.save(employees.get(0))).thenReturn(employees.get(0));
 		
 		mockMvc.perform(
-					post("/api/v1/project")
+					post("/api/v1/employee")
 					.content("{}")
 					.contentType(MediaType.APPLICATION_JSON)
 				)

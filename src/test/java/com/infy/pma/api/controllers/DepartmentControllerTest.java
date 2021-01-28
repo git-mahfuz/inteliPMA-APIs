@@ -2,6 +2,8 @@ package com.infy.pma.api.controllers;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -15,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.infy.pma.api.entities.Department;
@@ -41,7 +42,7 @@ class DepartmentControllerTest {
 		when(departmentService.findAll()).thenReturn(departments);
 
 		mockMvc.perform(
-				MockMvcRequestBuilders.get("/api/v1/department")
+				get("/api/v1/department")
 					.contentType(MediaType.APPLICATION_JSON)
 			)
 				.andDo(print()).andExpect(jsonPath("$[0].name", containsString("Engineering")))
@@ -59,7 +60,7 @@ class DepartmentControllerTest {
 		when(departmentService.findAll()).thenReturn(departments);
 
 		mockMvc.perform(
-				MockMvcRequestBuilders.get("/api/v1/department")
+				get("/api/v1/department")
 			)
 				.andDo(print())
 				.andExpect(status().isUnsupportedMediaType());
@@ -73,10 +74,10 @@ class DepartmentControllerTest {
 		when(departmentService.save(department)).thenReturn(department);
 
 		mockMvc.perform(
-				MockMvcRequestBuilders.post("/api/v1/department")
-					.content(new ObjectMapper().writeValueAsString(department)
-			)
-				.contentType(MediaType.APPLICATION_JSON))
+				post("/api/v1/department")
+					.content(new ObjectMapper().writeValueAsString(department))
+					.contentType(MediaType.APPLICATION_JSON)
+				)
 				.andDo(print())
 				.andExpect(status().isCreated());
 
@@ -89,8 +90,10 @@ class DepartmentControllerTest {
 
 		when(departmentService.save(department)).thenReturn(department);
 
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/department")
-				.content(new ObjectMapper().writeValueAsString(department))
+		mockMvc.perform(
+				post("/api/v1/department")
+				.content(new ObjectMapper().writeValueAsString(department)
+			)
 				.contentType(MediaType.APPLICATION_JSON))
 				.andDo(print())
 				.andExpect(status().isBadRequest());

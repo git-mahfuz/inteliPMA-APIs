@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
@@ -41,7 +42,7 @@ public class Project {
 
 	@Enumerated(EnumType.STRING)
 	@NotNull
-	private ProjectStage stage;
+	private ProjectStage stage;	
 
 	private String description;
 
@@ -58,6 +59,9 @@ public class Project {
 	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH }, fetch = FetchType.LAZY)
 	@JoinTable(name = "employee_project", joinColumns = @JoinColumn(name = "project_id"), inverseJoinColumns = @JoinColumn(name = "employee_id"))
 	private List<Employee> employees;
+	
+	@OneToMany(mappedBy = "project")
+	private List<Epic> epics;
 
 	public Project() {
 

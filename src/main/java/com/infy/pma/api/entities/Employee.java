@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
@@ -67,6 +68,10 @@ public class Employee {
 			joinColumns = @JoinColumn(name="employee_id"),
 			inverseJoinColumns = @JoinColumn(name="project_id"))
 	private List<Project> projects;
+	
+	@OneToMany(mappedBy = "employee")
+	private List<Epic> epics;
+	
 
 	public Employee() {
 
